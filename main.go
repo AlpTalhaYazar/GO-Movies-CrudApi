@@ -74,7 +74,13 @@ func deleteMovie(w http.ResponseWriter, r *http.Request) {
 
 	params := mux.Vars(r)
 
-	index, _ := strconv.Atoi(params["id"])
+	var index int
+	for i, movie := range movies {
+		if movie.ID == params["id"] {
+			index = i
+			break
+		}
+	}
 
 	copy(movies[index:], movies[index+1:])
 	movies[len(movies)-1] = Movie{}
