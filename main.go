@@ -66,8 +66,9 @@ func updateMovie(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(&movies[index])
 			break
 		}
+		// return 404 if not found any movie with defined id
+		w.WriteHeader(404)
 	}
-
 }
 func deleteMovie(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "applicaion/json")
@@ -80,6 +81,8 @@ func deleteMovie(w http.ResponseWriter, r *http.Request) {
 			index = i
 			break
 		}
+		// return 404 if not found any movie with defined id
+		w.WriteHeader(404)
 	}
 
 	copy(movies[index:], movies[index+1:])
