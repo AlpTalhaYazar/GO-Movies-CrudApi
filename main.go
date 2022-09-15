@@ -6,7 +6,9 @@ import (
 	"github.com/ahmetalpbalkan/go-linq"
 	"github.com/gorilla/mux"
 	"log"
+	"math/rand"
 	"net/http"
+	"strconv"
 )
 
 type Movie struct {
@@ -38,6 +40,19 @@ func getMovie(w http.ResponseWriter, r *http.Request) {
 	})
 
 	json.NewEncoder(w).Encode(selectedMovie)
+}
+func createMovie(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	var newMovie Movie
+
+	json.NewDecoder(r.Body).Decode(&newMovie)
+
+	newMovie.ID = strconv.Itoa(rand.Intn(1000000))
+
+	movies = append(movies, newMovie)
+
+	json.NewEncoder(w).Encode(newMovie)
 }
 func main() {
 	r := mux.NewRouter()
@@ -71,6 +86,7 @@ func main() {
 
 	r.HandleFunc("/movies", getMovies).Methods("GET")
 	r.HandleFunc("/movies/{id}", getMovie).Methods("GET")
+	r.HandleFunc("/movies", createMovie).Methods("POST")
 	fmt.Printf("Starting server at port 8080\n")
 	log.Fatal(http.ListenAndServe(":8080", r))
 }
